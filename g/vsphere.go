@@ -1,0 +1,58 @@
+package g
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/vmware/govmomi"
+	"github.com/vmware/govmomi/view"
+	"github.com/vmware/govmomi/vim25/mo"
+)
+
+func datastores(ctx context.Context, c *govmomi.Client) []mo.Datastore {
+	m := view.NewManager(c.Client)
+	v, err := m.CreateContainerView(ctx, c.ServiceContent.RootFolder, []string{"Datastore"}, true)
+	if err != nil {
+		Log.Warnln("[vsphere.go]", err)
+	}
+	defer v.Destroy(ctx)
+
+	var dss []mo.Datastore
+	err = v.Retrieve(ctx, []string{"Datastore"}, []string{"summary"}, &dss)
+	if err != nil {
+		Log.Warnln("[vsphere.go]", err)
+	}
+
+	if le := len(dss); le != 0 {
+		return dss
+	}
+	return nil
+}
+
+//DatastoreMetrics datastore相关监控
+func DatastoreMetrics(ctx context.Context, c *govmomi.Client) (L []*MetricValue) {
+	dss := datastores(ctx, c)
+	if dss != nil {
+		for _, ds := range dss {
+			tags := fmt.Sprintf("ds=%s,fstype=%s", ds.Summary.Name, ds.Summary.Type)
+			L = append(L, GaugeValue("datastore.bits.total", ds.Summary.Capacity, tags))
+			L = append(L, GaugeValue("datastore.bits.free", ds.Summary.FreeSpace, tags))
+		}
+	}
+	return
+}
+
+//VsphereMappers 返回Vsphere相关监控Mappers
+func VsphereMappers() []VFuncsAndInterval {
+	interval := Config().Transfer.Interval
+	mappers := []VFuncsAndInterval{
+		{
+			Fs: []func(ctx context.Context, c *govmomi.Client) []*MetricValue{
+				DatastoreMetrics,
+				AgentMetrics,
+			},
+			Interval: interval,
+		},
+	}
+	return mappers
+}
