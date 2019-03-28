@@ -221,7 +221,7 @@ func extendMem(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWUR
 	return
 }
 
-//EsxiExtendMappers EsxiExtend的Map对象
+//EsxiExtendMappers EsxiExtend's mapper status
 func EsxiExtendMappers() []EFuncsAndInterval {
 	interval := Config().Transfer.Interval
 	mappers := []EFuncsAndInterval{

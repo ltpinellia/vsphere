@@ -6,13 +6,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/vmware/govmomi/vim25/mo"
-
 	"github.com/vmware/govmomi"
+	"github.com/vmware/govmomi/vim25/mo"
 	"github.com/vsphere/g"
 )
 
-//Collect 监控项采集
+//Collect collect metrics
 func Collect(ctx context.Context, c *govmomi.Client, cfg *g.VsphereConfig) {
 	stime := time.Now().Unix()
 
@@ -21,14 +20,14 @@ func Collect(ctx context.Context, c *govmomi.Client, cfg *g.VsphereConfig) {
 	}
 
 	var wg sync.WaitGroup
+	g.DsWithURL(ctx, c)
+	dsWURL := g.DsWURL()
 	mapperEsxi := g.EsxiMappers()
 	mapperVS := g.VsphereMappers()
 	esxiList := g.EsxiList(ctx, c)
 
 	g.ReportVCStatus(cfg)
 	g.CounterWithID(ctx, c)
-	g.DsWithURL(ctx, c)
-	dsWURL := g.DsWURL()
 
 	for _, v := range mapperVS {
 		wg.Add(1)

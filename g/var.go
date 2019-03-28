@@ -6,43 +6,39 @@ import (
 	"sync"
 	"time"
 
-	"github.com/vmware/govmomi/vim25/mo"
-
 	"github.com/sirupsen/logrus"
 	"github.com/vmware/govmomi"
+	"github.com/vmware/govmomi/vim25/mo"
 )
 
 const (
-	//VERSION 版本号
+	//VERSION version
 	VERSION = "1.0.0"
-	//LOGFILE 日志文件
+	//LOGFILE log file
 	LOGFILE = "./var/vsphere.log"
 )
 
-//Log 全局log
+//Log global logger
 var Log = logrus.New()
 
-//Root 程序根目录
-var Root string
-
-//OldModTime 配置文件当前修改时间
+//OldModTime global config 's mTime
 var OldModTime int64
 
-//OldExtendTime 旧扩展配置文件修改时间
+//OldExtendTime extend config 's mTime
 var OldExtendTime int64
 
-//LocalIP 本地IP
+//LocalIP the vc ip
 var LocalIP string
 
-//HbsClient HBS客户端
+//HbsClient hbs client
 var HbsClient *SingleConnRPCClient
 
-//SimpleRPCResponse RPC返回
+//SimpleRPCResponse rpc
 type SimpleRPCResponse struct {
 	Code int `json:"code"`
 }
 
-//SingleConnRPCClient RPC client
+//SingleConnRPCClient rpc client
 type SingleConnRPCClient struct {
 	sync.Mutex
 	rpcClient *rpc.Client
@@ -50,7 +46,7 @@ type SingleConnRPCClient struct {
 	Timeout   time.Duration
 }
 
-//AgentReportRequest Agent上报状态信息格式
+//AgentReportRequest agent report format
 type AgentReportRequest struct {
 	Hostname      string
 	IP            string
@@ -58,7 +54,7 @@ type AgentReportRequest struct {
 	PluginVersion string
 }
 
-//MetricValue 上传监控项格式
+//MetricValue metric format
 type MetricValue struct {
 	Endpoint  string      `json:"endpoint"`
 	Metric    string      `json:"metric"`
@@ -69,25 +65,25 @@ type MetricValue struct {
 	Timestamp int64       `json:"timestamp"`
 }
 
-//VFuncsAndInterval Vsphere上传监控项函数及上传间隔
+//VFuncsAndInterval vc mapper format
 type VFuncsAndInterval struct {
 	Fs       []func(ctx context.Context, c *govmomi.Client) []*MetricValue
 	Interval int
 }
 
-//EFuncsAndInterval Esxi上传监控项函数及上传间隔
+//EFuncsAndInterval esxi mapper format
 type EFuncsAndInterval struct {
 	Fs       []func(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL *[]DatastoreWithURL) []*MetricValue
 	Interval int
 }
 
-//DatastoreWithURL 存储器与路径之间的映射
+//DatastoreWithURL datastore with url
 type DatastoreWithURL struct {
 	Datastore string
 	URL       string
 }
 
-//TransferResponse transfer返回格式
+//TransferResponse transfer return format
 type TransferResponse struct {
 	Message string
 	Total   int
@@ -95,7 +91,7 @@ type TransferResponse struct {
 	Latency int64
 }
 
-//MetricPerf Performance监控项值
+//MetricPerf vsphere performance
 type MetricPerf struct {
 	Metric   string `json:"metric"`
 	Value    int64  `json:"value"`

@@ -1,6 +1,6 @@
 package g
 
-// ReportVCStatus 用于上报VC状态
+// ReportVCStatus report vc status
 func ReportVCStatus(vc *VsphereConfig, hostname ...string) {
 	if Config().Heartbeat.Enabled && Config().Heartbeat.Addr != "" {
 		go reportVCStatus(vc, hostname...)
@@ -11,7 +11,6 @@ func reportVCStatus(vc *VsphereConfig, hostname ...string) {
 	var ip string
 	var plugin string
 	var sHostName string
-	//插件版本(是否监控扩展监控项)
 	if vc.Extend {
 		plugin = VERSION
 	} else {

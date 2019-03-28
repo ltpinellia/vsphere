@@ -9,14 +9,14 @@ import (
 	"time"
 )
 
-//HeartbeatConfig Hbs配置
+//HeartbeatConfig hbs configuration
 type HeartbeatConfig struct {
 	Enabled bool   `json:"enabled"`
 	Addr    string `json:"addr"`
 	Timeout int    `json:"timeout"`
 }
 
-//TransferConfig Transfer配置
+//TransferConfig transfer configuration
 type TransferConfig struct {
 	Enabled  bool     `json:"enabled"`
 	Addr     []string `json:"addrs"`
@@ -24,7 +24,7 @@ type TransferConfig struct {
 	Timeout  int      `json:"timeout"`
 }
 
-//VsphereConfig Vsphere配置
+//VsphereConfig vsphere configuration
 type VsphereConfig struct {
 	Hostname     string `json:"hostname"`
 	IP           string `json:"ip"`
@@ -38,7 +38,7 @@ type VsphereConfig struct {
 	Extend       bool   `json:"extend"`
 }
 
-//GlobalConfig 全局配置
+//GlobalConfig global configuration
 type GlobalConfig struct {
 	Debug     bool             `json:"debug"`
 	Extend    string           `json:"extend"`
@@ -47,7 +47,7 @@ type GlobalConfig struct {
 	Vsphere   []*VsphereConfig `json:"vsphere"`
 }
 
-//ExtendConfig 扩展监控项配置
+//ExtendConfig extend configuration
 type ExtendConfig struct {
 	Hbr            []string `json:"hbr"`
 	Rescpu         []string `json:"rescpu"`
@@ -66,25 +66,25 @@ var (
 	config *GlobalConfig
 	extend *ExtendConfig
 	lock   = new(sync.RWMutex)
-	//ConfigFile 全局配置
+	//ConfigFile global config file
 	ConfigFile string
 )
 
-//Config 获取全局配置
+//Config get global config
 func Config() *GlobalConfig {
 	lock.RLock()
 	defer lock.RUnlock()
 	return config
 }
 
-//Extend 获取扩展配置
+//Extend get extend config
 func Extend() *ExtendConfig {
 	lock.RLock()
 	defer lock.RUnlock()
 	return extend
 }
 
-//ParseConfig 解析全局配置
+//ParseConfig parse global config
 func ParseConfig(cfg string) {
 	if cfg == "" {
 		Log.Fatalln("[cfg.go] use -c to specify configuration file")
@@ -123,7 +123,7 @@ func ParseConfig(cfg string) {
 	Log.Info("[cfg.go] read global config file: ", cfg, " successfully!")
 }
 
-//ReloadConfig 重载全局配置
+//ReloadConfig monitor and reload global config
 func ReloadConfig(cfg string) {
 	t := time.NewTicker(time.Second * 5)
 	defer t.Stop()
@@ -139,7 +139,7 @@ func ReloadConfig(cfg string) {
 	}
 }
 
-//ParseExtendConfig 解析扩展配置
+//ParseExtendConfig parse extend config
 func ParseExtendConfig(cfg string) {
 	if cfg == "" {
 		Log.Fatalln("[cfg.go] extend config file:", cfg, "is not existent.")
@@ -173,7 +173,7 @@ func ParseExtendConfig(cfg string) {
 	Log.Info("[cfg.go] read extend config file: ", cfg, " successfully!")
 }
 
-//ReloadExtendConfig 重载扩展配置
+//ReloadExtendConfig monitor and reload extend config
 func ReloadExtendConfig(cfg string) {
 	t := time.NewTicker(time.Second * 5)
 	defer t.Stop()

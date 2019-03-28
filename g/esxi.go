@@ -12,7 +12,7 @@ import (
 	"github.com/vmware/govmomi/vim25/mo"
 )
 
-//EsxiList 用于获取VSphere下所有的esxi
+//EsxiList get esxi list
 func EsxiList(ctx context.Context, c *govmomi.Client) []mo.HostSystem {
 	m := view.NewManager(c.Client)
 	var esxiList []mo.HostSystem
@@ -29,13 +29,13 @@ func EsxiList(ctx context.Context, c *govmomi.Client) []mo.HostSystem {
 	return esxiList
 }
 
-//esxiAlive 电源状态
+//esxiAlive power status
 func esxiPower(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL *[]DatastoreWithURL) []*MetricValue {
 	/*
-		poweredOff:关机
-		poweredOn:开机
-		standBy:待机
-		unknown:主机断开连接或者无响应时被标记为未知
+		1.0: poweredOff
+		2.0: poweredOn
+		3.0: standBy
+		4.0: unknown
 	*/
 	switch esxi.Summary.Runtime.PowerState {
 	case "poweredOff":
@@ -51,13 +51,13 @@ func esxiPower(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWUR
 	}
 }
 
-//esxiStatus 主机状态
+//esxiStatus The Status enumeration defines a general "health" value for a managed entity.
 func esxiStatus(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL *[]DatastoreWithURL) []*MetricValue {
 	/*
-		gray:状态未知
-		green:实体没问题
-		red:实体肯定有问题
-		yellow:实体可能有问题
+		1.0: gray,The status is unknown.
+		2.0: green,The entity is OK.
+		3.0: red,The entity definitely has a problem.
+		4.0: yellow,The entity might have a problem.
 	*/
 	switch esxi.Summary.OverallStatus {
 	case "gray":
@@ -73,12 +73,12 @@ func esxiStatus(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWU
 	}
 }
 
-//esxiUptime 开机时间
+//esxiUptime uptime
 func esxiUptime(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL *[]DatastoreWithURL) []*MetricValue {
 	return []*MetricValue{GaugeValue("agent.uptime", esxi.Summary.QuickStats.Uptime)}
 }
 
-//esxiCPU CPU相关监控信息
+//esxiCPU cpu metrics
 func esxiCPU(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL *[]DatastoreWithURL) []*MetricValue {
 	var total = int64(esxi.Summary.Hardware.CpuMhz) * int64(esxi.Summary.Hardware.NumCpuCores)
 	totalCPU := GaugeValue("cpu.total", total*1000*1000)
@@ -88,7 +88,7 @@ func esxiCPU(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL 
 	return []*MetricValue{totalCPU, freeCPU, useCPU, usePercentCPU}
 }
 
-//esxiMem 内存相关监控信息
+//esxiMem mem metrics
 func esxiMem(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL *[]DatastoreWithURL) []*MetricValue {
 	var total = esxi.Summary.Hardware.MemorySize
 	var free = int64(esxi.Summary.Hardware.MemorySize) - (int64(esxi.Summary.QuickStats.OverallMemoryUsage) * 1024 * 1024)
@@ -100,7 +100,7 @@ func esxiMem(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL 
 	return []*MetricValue{totalMem, useMem, freeMem, freeMemPer, usedMemPer}
 }
 
-//esxiNet 网络相关监控信息
+//esxiNet net metrics
 func esxiNet(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL *[]DatastoreWithURL) []*MetricValue {
 	var netPerf []*MetricValue
 	counterNameID := CoID()
@@ -121,7 +121,7 @@ func esxiNet(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL 
 	return netPerf
 }
 
-//esxiDatastore 存储相关监控信息
+//esxiDatastore datastore metrics
 func esxiDatastore(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL *[]DatastoreWithURL) []*MetricValue {
 	var datastorePerf []*MetricValue
 	counterNameID := CoID()
@@ -150,7 +150,7 @@ func esxiDatastore(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, d
 	return datastorePerf
 }
 
-//esxiDisk 磁盘使用空间
+//esxiDisk disk metrics
 func esxiDisk(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL *[]DatastoreWithURL) []*MetricValue {
 	var diskPerf []*MetricValue
 	pc := property.DefaultCollector(c.Client)
@@ -190,7 +190,7 @@ func esxiDisk(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL
 	return diskPerf
 }
 
-//EsxiMappers Esxi的Map对象
+//EsxiMappers Esxi's mapper object
 func EsxiMappers() []EFuncsAndInterval {
 	interval := Config().Transfer.Interval
 	mappers := []EFuncsAndInterval{

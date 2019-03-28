@@ -29,7 +29,7 @@ func datastores(ctx context.Context, c *govmomi.Client) []mo.Datastore {
 	return nil
 }
 
-//DatastoreMetrics datastore相关监控
+//DatastoreMetrics datastore metrics
 func DatastoreMetrics(ctx context.Context, c *govmomi.Client) (L []*MetricValue) {
 	dss := datastores(ctx, c)
 	if dss != nil {
@@ -42,7 +42,7 @@ func DatastoreMetrics(ctx context.Context, c *govmomi.Client) (L []*MetricValue)
 	return
 }
 
-//VsphereMappers 返回Vsphere相关监控Mappers
+//VsphereMappers vsphere's mappers object
 func VsphereMappers() []VFuncsAndInterval {
 	interval := Config().Transfer.Interval
 	mappers := []VFuncsAndInterval{

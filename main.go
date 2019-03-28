@@ -9,10 +9,10 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/vsphere/cron"
-	"github.com/vsphere/g"
 	"github.com/vmware/govmomi"
 	"github.com/vmware/govmomi/vim25/soap"
+	"github.com/vsphere/cron"
+	"github.com/vsphere/g"
 )
 
 func main() {
@@ -31,7 +31,6 @@ func main() {
 	go g.ReloadConfig(*cfg)
 	go g.ReloadExtendConfig(g.Config().Extend)
 
-	g.InitRootDir()
 	g.InitRPCClients()
 
 	t := time.NewTicker(time.Duration(g.Config().Transfer.Interval) * time.Second)

@@ -24,7 +24,7 @@ var (
 	TransferClients = map[string]*SingleConnRPCClient{}
 )
 
-//SendMetrics 发送监控项
+//SendMetrics send metrics
 func SendMetrics(metrics []*MetricValue, resp *TransferResponse) {
 	rand.Seed(time.Now().UnixNano())
 	for _, i := range rand.Perm(len(Config().Transfer.Addr)) {
@@ -71,7 +71,7 @@ func getTransferClient(addr string) *SingleConnRPCClient {
 	return nil
 }
 
-//SendToTransfer 发送监控数据到transfer
+//SendToTransfer send metrics to transfer
 func SendToTransfer(metrics []*MetricValue) {
 	if len(metrics) == 0 {
 		return

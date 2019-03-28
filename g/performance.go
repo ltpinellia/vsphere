@@ -8,11 +8,10 @@ import (
 	"github.com/vmware/govmomi/vim25/types"
 )
 
-// Performance 用于根据传入的counterID获取Counter值
+// Performance get counter value by counter key
 func Performance(ctx context.Context, c *govmomi.Client, MOR types.ManagedObjectReference, counterID int32) ([]*MetricPerf, error) {
 	pm := performance.NewManager(c.Client)
 	var pQS = perfQuerySpec(MOR, counterID)
-	//查询key对应的ID
 	counterKVL, err := pm.Query(ctx, pQS)
 	var metricPerf = make([]*MetricPerf, 0)
 

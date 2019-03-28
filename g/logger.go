@@ -5,7 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// InitLog 初始化log
+//InitLog initialize logger
 func InitLog(level string) (err error) {
 	switch level {
 	case "info":
