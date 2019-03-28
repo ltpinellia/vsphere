@@ -304,7 +304,7 @@
 |mem.consumed.minimum|Amount of machine memory used on the host. Consumed memory includes Includes memory used by the Service Console, the VMkernel, vSphere services, plus the total consumed metrics for all running virtual machines.host consumed memory = total host memory - free host memory|absolute|
 |mem.vmmemctl.minimum|The sum of all vmmemctl values for all powered-on virtual machines, plus vSphere services on the host. If the balloon target value is greater than the balloon value, the VMkernel inflates the balloon, causing more virtual machine memory to be reclaimed. If the balloon target value is less than the balloon value, the VMkernel deflates the balloon, which allows the virtual machine to consume additional memory if needed.|absolute|
 |mem.consumed.average|Amount of machine memory used on the host. Consumed memory includes Includes memory used by the Service Console, the VMkernel, vSphere services, plus the total consumed metrics for all running virtual machines.host consumed memory = total host memory - free host memory|absolute|
-|mem.active.none  Sum of all active metrics for all powered-on virtual machines plus vSphere services (such as COS, vpxa) on the host.|absolute|
+|mem.active.none|Sum of all active metrics for all powered-on virtual machines plus vSphere services (such as COS, vpxa) on the host.|absolute|
 |mem.vmfs.pbc.overhead.latest|Amount of VMFS heap used by the VMFS PB Cache|  absolute|
 |mem.swapout.average|Sum of swapout metrics from all powered-on virtual machines on the host.|absolute|
 |mem.usage.minimum|Percentage of available machine memory:consumed ÷ machine-memory-size|absolute|
