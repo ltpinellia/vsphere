@@ -41,7 +41,6 @@ type VsphereConfig struct {
 //GlobalConfig 全局配置
 type GlobalConfig struct {
 	Debug     bool             `json:"debug"`
-	Hostname  string           `json:"hostname"`
 	Extend    string           `json:"extend"`
 	Heartbeat *HeartbeatConfig `json:"heartbeat"`
 	Transfer  *TransferConfig  `json:"transfer"`
@@ -83,19 +82,6 @@ func Extend() *ExtendConfig {
 	lock.RLock()
 	defer lock.RUnlock()
 	return extend
-}
-
-// Hostname 获取主机名
-func Hostname() (string, error) {
-	hostname := Config().Hostname
-	if hostname != "" {
-		return hostname, nil
-	}
-	hostname, err := os.Hostname()
-	if err != nil {
-		Log.Panicln("[cfg.go] Error: os.Hostname() fail", err)
-	}
-	return hostname, err
 }
 
 //ParseConfig 解析全局配置

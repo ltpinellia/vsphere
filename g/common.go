@@ -85,10 +85,10 @@ func CoID() map[string]int32 {
 }
 
 //DsWURL 存储器ID与存储器命名之间的映射
-func DsWURL() []DatastoreWithURL {
+func DsWURL() *[]DatastoreWithURL {
 	lock.RLock()
 	defer lock.RUnlock()
-	return *dsWUrl
+	return dsWUrl
 }
 
 //CounterWithID 获取所有的counter列表(Key:counter name,Value:counter id)

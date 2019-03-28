@@ -14,7 +14,7 @@ import (
 
 const (
 	//VERSION 版本号
-	VERSION = "1.0.4"
+	VERSION = "1.0.0"
 	//LOGFILE 日志文件
 	LOGFILE = "./var/vsphere.log"
 )
@@ -77,7 +77,7 @@ type VFuncsAndInterval struct {
 
 //EFuncsAndInterval Esxi上传监控项函数及上传间隔
 type EFuncsAndInterval struct {
-	Fs       []func(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) []*MetricValue
+	Fs       []func(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL *[]DatastoreWithURL) []*MetricValue
 	Interval int
 }
 

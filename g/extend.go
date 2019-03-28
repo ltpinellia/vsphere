@@ -8,7 +8,7 @@ import (
 	"github.com/vmware/govmomi/vim25/mo"
 )
 
-func extendHbr(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) (hbrPerf []*MetricValue) {
+func extendHbr(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL *[]DatastoreWithURL) (hbrPerf []*MetricValue) {
 	counterNameID := CoID()
 	var hbsExtend = Extend().Hbr
 	extendID := CounterIDByName(counterNameID, hbsExtend)
@@ -23,7 +23,7 @@ func extendHbr(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) (hbrP
 	return
 }
 
-func extendResCPU(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) (resPerf []*MetricValue) {
+func extendResCPU(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL *[]DatastoreWithURL) (resPerf []*MetricValue) {
 	counterNameID := CoID()
 	var resExtend = Extend().Rescpu
 	extendID := CounterIDByName(counterNameID, resExtend)
@@ -38,7 +38,7 @@ func extendResCPU(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) (r
 	return
 }
 
-func extendStoragePath(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) (storagePathPerf []*MetricValue) {
+func extendStoragePath(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL *[]DatastoreWithURL) (storagePathPerf []*MetricValue) {
 	counterNameID := CoID()
 	var storagePathExtend = Extend().StoragePath
 	extendID := CounterIDByName(counterNameID, storagePathExtend)
@@ -59,7 +59,7 @@ func extendStoragePath(ctx context.Context, c *govmomi.Client, esxi mo.HostSyste
 	return
 }
 
-func extendStorageAdapter(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) (storageAdapterPerf []*MetricValue) {
+func extendStorageAdapter(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL *[]DatastoreWithURL) (storageAdapterPerf []*MetricValue) {
 	counterNameID := CoID()
 	var storageAdapterExtend = Extend().StorageAdapter
 	extendID := CounterIDByName(counterNameID, storageAdapterExtend)
@@ -80,7 +80,7 @@ func extendStorageAdapter(ctx context.Context, c *govmomi.Client, esxi mo.HostSy
 	return
 }
 
-func extendPower(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) (powerPerf []*MetricValue) {
+func extendPower(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL *[]DatastoreWithURL) (powerPerf []*MetricValue) {
 	counterNameID := CoID()
 	var powerExtend = Extend().Power
 	extendID := CounterIDByName(counterNameID, powerExtend)
@@ -95,7 +95,7 @@ func extendPower(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) (po
 	return
 }
 
-func extendSys(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) (sysPerf []*MetricValue) {
+func extendSys(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL *[]DatastoreWithURL) (sysPerf []*MetricValue) {
 	counterNameID := CoID()
 	var sysExtend = Extend().Sys
 	extendID := CounterIDByName(counterNameID, sysExtend)
@@ -116,7 +116,7 @@ func extendSys(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) (sysP
 	return
 }
 
-func extendNet(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) (netPerf []*MetricValue) {
+func extendNet(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL *[]DatastoreWithURL) (netPerf []*MetricValue) {
 	counterNameID := CoID()
 	var netExtend = Extend().Net
 	extendID := CounterIDByName(counterNameID, netExtend)
@@ -137,7 +137,7 @@ func extendNet(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) (netP
 	return
 }
 
-func extendDisk(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) (diskPerf []*MetricValue) {
+func extendDisk(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL *[]DatastoreWithURL) (diskPerf []*MetricValue) {
 	counterNameID := CoID()
 	var diskExtend = Extend().Disk
 	extendID := CounterIDByName(counterNameID, diskExtend)
@@ -158,7 +158,7 @@ func extendDisk(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) (dis
 	return
 }
 
-func extendCPU(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) (cpuPerf []*MetricValue) {
+func extendCPU(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL *[]DatastoreWithURL) (cpuPerf []*MetricValue) {
 	counterNameID := CoID()
 	var cpuExtend = Extend().CPU
 	extendID := CounterIDByName(counterNameID, cpuExtend)
@@ -179,18 +179,17 @@ func extendCPU(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) (cpuP
 	return
 }
 
-func extendDatastore(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) (datastorePerf []*MetricValue) {
+func extendDatastore(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL *[]DatastoreWithURL) (datastorePerf []*MetricValue) {
 	counterNameID := CoID()
 	var datastoreExtend = Extend().Datastore
 	extendID := CounterIDByName(counterNameID, datastoreExtend)
-	dsWithURL := DsWURL()
 	for _, k := range extendID {
 		metricPerf, err := Performance(ctx, c, esxi.Self, k)
 		if err == nil {
 			for _, each := range metricPerf {
 				var tags string
 				if each.Instance != "" {
-					for _, eachDs := range dsWithURL {
+					for _, eachDs := range *dsWURL {
 						if strings.Index(eachDs.URL, each.Instance) != -1 {
 							tags = "dev=" + eachDs.Datastore
 							break
@@ -207,7 +206,7 @@ func extendDatastore(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem)
 	return
 }
 
-func extendMem(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) (memPerf []*MetricValue) {
+func extendMem(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL *[]DatastoreWithURL) (memPerf []*MetricValue) {
 	counterNameID := CoID()
 	var memExtend = Extend().Mem
 	extendID := CounterIDByName(counterNameID, memExtend)
@@ -227,67 +226,17 @@ func EsxiExtendMappers() []EFuncsAndInterval {
 	interval := Config().Transfer.Interval
 	mappers := []EFuncsAndInterval{
 		{
-			Fs: []func(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) []*MetricValue{
+			Fs: []func(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, dsWURL *[]DatastoreWithURL) []*MetricValue{
 				extendHbr,
-			},
-			Interval: interval,
-		},
-		{
-			Fs: []func(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) []*MetricValue{
 				extendResCPU,
-			},
-			Interval: interval,
-		},
-		{
-			Fs: []func(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) []*MetricValue{
 				extendStoragePath,
-			},
-			Interval: interval,
-		},
-		{
-			Fs: []func(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) []*MetricValue{
 				extendStorageAdapter,
-			},
-			Interval: interval,
-		},
-		{
-			Fs: []func(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) []*MetricValue{
 				extendPower,
-			},
-			Interval: interval,
-		},
-		{
-			Fs: []func(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) []*MetricValue{
 				extendSys,
-			},
-			Interval: interval,
-		},
-		{
-			Fs: []func(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) []*MetricValue{
 				extendNet,
-			},
-			Interval: interval,
-		},
-		{
-			Fs: []func(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) []*MetricValue{
 				extendDisk,
-			},
-			Interval: interval,
-		},
-		{
-			Fs: []func(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) []*MetricValue{
 				extendCPU,
-			},
-			Interval: interval,
-		},
-		{
-			Fs: []func(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) []*MetricValue{
 				extendDatastore,
-			},
-			Interval: interval,
-		},
-		{
-			Fs: []func(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem) []*MetricValue{
 				extendMem,
 			},
 			Interval: interval,

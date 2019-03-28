@@ -1,0 +1,31 @@
+{
+    "debug": false,
+    "extend": "./extend.json",
+    "heartbeat": {
+        "enabled": true,
+        "addr": "127.0.0.1:6030",
+        "timeout": 1000
+    },
+    "transfer": {
+        "enabled": true,
+        "addrs": [
+            "127.0.0.1:8433"
+        ],
+        "interval": 60,
+        "timeout": 1000
+    },
+    "vsphere": [
+        {
+            "hostname": "VC-1.1.1.1",
+            "ip": "1.1.1.1",
+            "addr": "https://1.1.1.1/sdk",
+            "user":"vsphere1-user",
+            "pwd":"vsphere1-pwd",
+            "port": 443,
+            "split": true,
+            "endpointhead": "ESXI-",
+            "metrichead":"esxi.",
+            "extend": false
+        }
+    ]
+}

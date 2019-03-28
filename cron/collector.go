@@ -8,8 +8,8 @@ import (
 
 	"github.com/vmware/govmomi/vim25/mo"
 
-	"github.com/Vsphere/g"
 	"github.com/vmware/govmomi"
+	"github.com/vsphere/g"
 )
 
 //Collect 监控项采集
@@ -28,6 +28,7 @@ func Collect(ctx context.Context, c *govmomi.Client, cfg *g.VsphereConfig) {
 	g.ReportVCStatus(cfg)
 	g.CounterWithID(ctx, c)
 	g.DsWithURL(ctx, c)
+	dsWURL := g.DsWURL()
 
 	for _, v := range mapperVS {
 		wg.Add(1)
@@ -45,7 +46,7 @@ func Collect(ctx context.Context, c *govmomi.Client, cfg *g.VsphereConfig) {
 	for _, esxi := range esxiList {
 		for _, ve := range mapperEsxi {
 			wg.Add(1)
-			go collectEsxi(ctx, c, esxi, ve, cfg, &wg)
+			go collectEsxi(ctx, c, esxi, ve, cfg, &wg, dsWURL)
 		}
 	}
 
@@ -79,7 +80,7 @@ func collectVsphere(ctx context.Context, c *govmomi.Client, v g.VFuncsAndInterva
 	g.SendToTransfer(mvs)
 }
 
-func collectEsxi(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, v g.EFuncsAndInterval, cfg *g.VsphereConfig, wg *sync.WaitGroup) {
+func collectEsxi(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, v g.EFuncsAndInterval, cfg *g.VsphereConfig, wg *sync.WaitGroup, dsWURL *[]g.DatastoreWithURL) {
 
 	defer wg.Done()
 	mvs := []*g.MetricValue{}
@@ -88,7 +89,7 @@ func collectEsxi(ctx context.Context, c *govmomi.Client, esxi mo.HostSystem, v g
 	mvs = append(mvs, g.AgentMetrics(ctx, c)...)
 
 	for _, fn := range v.Fs {
-		items := fn(ctx, c, esxi)
+		items := fn(ctx, c, esxi, dsWURL)
 		if items == nil || len(items) == 0 {
 			continue
 		}

@@ -9,8 +9,8 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/Vsphere/cron"
-	"github.com/Vsphere/g"
+	"github.com/vsphere/cron"
+	"github.com/vsphere/g"
 	"github.com/vmware/govmomi"
 	"github.com/vmware/govmomi/vim25/soap"
 )
