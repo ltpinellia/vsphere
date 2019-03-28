@@ -34,8 +34,8 @@
             "hostname": "VC-1.1.1.1",       #上传的Vsphere Endpoint名
             "ip": "1.1.1.1",                #Vsphere IP
             "addr": "https://1.1.1.1/sdk",  #Vsphere SDK地址
-            "user":"vsphere1-user",          #Vsphere 用户名
-            "pwd":"vsphere1-pwd",            #Vsphere 密码
+            "user":"vsphere1-user",         #Vsphere 用户名
+            "pwd":"vsphere1-pwd",           #Vsphere 密码
             "port": 443,                    #Vsphere 端口
             "split": true,                  #是否切分。如果选择true,那么VC将与esxi的监控项单独出来,esxi将作为单独的endpoint上传,esxi endpoint名称可以添加endpointhead作为头部;如果选择false，那么esxi的监控项将与VC的监控项合并上传,esxi的监控项会收集在VC下面作为一个大的endpoint,此时可以选择配置metrichead作为esxi的监控项头部,以区分vc跟esxi的监控项
             "endpointhead": "ESXI-",        #在split为true时生效，作为esxi endpoint的扩展头部，可为空
@@ -63,8 +63,8 @@
 |监控项名称|说明|
 |---|---|
 |agent.alive|默认上传1|
-|agent.power|1关机2开机3待机4未知,表示主机断开连接或者无响应|
-|agent.status|1状态未知2实体没问题3实体肯定有问题4实体可能有问题|
+|agent.power|1:关机;2:开机;3:待机;4:未知,表示主机断开连接或者无响应|
+|agent.status|1:状态未知;2:实体没问题;3:实体肯定有问题;4:实体可能有问题|
 |agent.uptime|开机时间|
 |cpu.busy|cpu使用百分比|
 |cpu.free.average|cpu空闲(单位:HZ)|
@@ -93,6 +93,7 @@
 2. 扩展监控项
 
 **类型声明**
+
 |NAME|DESCRIPTION|
 |-|-|
 |absolute|Represents an actual value, level, or state of the counter. For example, the “uptime” counter (system group) represents the actual number of seconds since startup. The “capacity” counter represents the actual configured size of the specified datastore. In other words, number of samples, samplingPeriod, and intervals have no bearing on an “absolute” counter“s value.|
